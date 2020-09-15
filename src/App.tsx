@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { FC, useEffect, useState } from 'react';
+import Character from './components/Character'
+import { getChars } from './API'
 
-function App() {
+const App: FC = () =>  {
+  const [swChars, setSwChars] = useState<IChar[]>([])
+
+  const fetchChars = (): void => {
+    getChars()
+      .then(({ data: { results } }: IChar[] | any) => setSwChars(results))
+      .catch((err: Error) => console.log(err))
+  }
+
+  useEffect(() => {
+    fetchChars()
+  }, [])
+
+  
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {swChars.map((swChar: IChar) => (
+        <Character character={swChar} key={swChar.name}/>
+      ))}
     </div>
   );
 }
